@@ -50,6 +50,7 @@ class Log extends DatabaseLoggerAppModel {
 			'order' => array('Log.type ASC')
 		));
 		$retval = Hash::extract($retval,'{n}.Log.type');
+		$retval = array_combine($retval, $retval);
 		Cache::write($cache_key, $retval);
 		return $retval;
 	}

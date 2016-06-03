@@ -111,12 +111,16 @@ class DatabaseLoggerAppModel extends AppModel {
 	  
 	  $columns = array_keys($this->schema());
 	  $headers = array();
-	  foreach($columns as $column){
-	    $headers[$this->alias][$column] = $column;
+	  if ($showHeaders) {
+	    foreach($columns as $column){
+	      $headers[$this->alias][$column] = $column;
+	    }
 	  }
 	  $data = $this->find('all', $options);
 	  
-	  array_unshift($data, $headers);
+	  if ($showHeaders) {
+	    array_unshift($data, $headers);
+	  }
 	  return $data;
 	}
 	
@@ -150,6 +154,9 @@ class DatabaseLoggerAppModel extends AppModel {
     $field_options = array('LIKE','>=','<=','>','<');
     foreach($params as $key => $value){
       if(isset($this->_fields[$key]) && $value){
+        if (is_array($value) && empty($value['year'])) {
+          $value = implode('[or]', $value);
+        }
         if(is_array($value)){
           if(!empty($value['year'])){
             $conditions['AND']["{$this->alias}.$key"] = $value['year'] ."-". $value['month'] . "-" . $value['day'];
